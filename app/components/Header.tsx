@@ -18,10 +18,22 @@ const Header = () => {
                 </Link>
                 <div className="mt-4 lg:mt-0">
                     <Link
-                        href="#about"
+                        href="/hawkers"
                         className="text-sm font-semibold hover:bg-neutral-100 focus:bg-neutral-100 -ml-2 p-2 rounded-md dark:hover:bg-neutral-800 dark:text-white"
                     >
-                        About
+                        Hawkers
+                    </Link>
+                    <Link
+                        href="/account"
+                        className="text-sm font-semibold hover:bg-neutral-100 focus:bg-neutral-100 -ml-2 p-2 rounded-md dark:hover:bg-neutral-800 dark:text-white"
+                    >
+                        Account
+                    </Link>
+                    <Link
+                        href="/login"
+                        className="text-sm font-semibold hover:bg-neutral-100 focus:bg-neutral-100 -ml-2 p-2 rounded-md dark:hover:bg-neutral-800 dark:text-white"
+                    >
+                        Login
                     </Link>
                 </div>
             </div>

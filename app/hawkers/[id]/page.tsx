@@ -50,9 +50,35 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
     return (
         <div className={classes.mainStyle}>
             <p className="text-2xl font-bold">{result.name}</p>
+            <p className="text-base">{result.address_myenv}</p>
+            <p className="text-base">{result.description_myenv}</p>
             <p className="text-base">{result.no_of_market_stalls}</p>
             <p className="text-base">{result.no_of_food_stalls}</p>
-            <p className="text-base">{result.description}</p>
+
+            <p className="text-xl">Q1 Cleaning Date</p>
+
+            <p className="text-base">{result.q1_cleaningstartdate}</p>
+            <p className="text-base">{result.q1_cleaningenddate}</p>
+            <p className="text-base">{result.remarks_q1}</p>
+
+            <p className="text-xl">Q2 Cleaning Date</p>
+
+            <p className="text-base">{result.q2_cleaningstartdate}</p>
+            <p className="text-base">{result.q2_cleaningenddate}</p>
+            <p className="text-base">{result.remarks_q2}</p>
+
+            <p className="text-xl">Q3 Cleaning Date</p>
+
+            <p className="text-base">{result.q3_cleaningstartdate}</p>
+            <p className="text-base">{result.q3_cleaningenddate}</p>
+            <p className="text-base">{result.remarks_q3}</p>
+
+            <p className="text-xl">Q4 Cleaning Date</p>
+
+            <p className="text-base">{result.q4_cleaningstartdate}</p>
+            <p className="text-base">{result.q4_cleaningenddate}</p>
+            <p className="text-base">{result.remarks_q4}</p>
+
             <Map
                 mapboxAccessToken={mapboxToken}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
