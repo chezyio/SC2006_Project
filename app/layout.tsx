@@ -18,9 +18,11 @@ export default function RootLayout({
                 />
             </head>
 
-            <body className="container max-w-screen min-h-screen mx-auto p-6">
+            <body>
                 <Header />
-                {children}
+                <main className="container max-w-screen min-h-screen mx-auto p-6">
+                    {children}
+                </main>
                 <Footer />
             </body>
         </html>

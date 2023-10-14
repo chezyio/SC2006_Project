@@ -1,6 +1,6 @@
 import * as React from "react";
 import HawkerCard from "../components/HawkerCard";
-import DataTable from "../components/DataTable";
+import Map from "../components/Map";
 
 async function getHawkers() {
     const res = await fetch(
@@ -20,9 +20,12 @@ const page = async () => {
     console.log(hawkers);
     return (
         <div>
-            {hawkers.map((hawker, num) => {
-                return <HawkerCard key={num} hawker={hawker} />;
-            })}
+            <div>
+                {hawkers.map((hawker, num) => {
+                    return <HawkerCard key={num} hawker={hawker} />;
+                })}
+            </div>
+            {/* <Map /> */}
         </div>
     );
 };

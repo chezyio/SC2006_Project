@@ -147,6 +147,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
                 </button>
             </div>
 
+            <div>favourites []</div>
             <div>
                 <form action="/auth/signout" method="post">
                     <button className="button block" type="submit">

@@ -50,35 +50,58 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
     return (
         <div className={classes.mainStyle}>
             <p className="text-2xl font-bold">{result.name}</p>
-            <p className="text-base">{result.address_myenv}</p>
+            <p className="text-base my-4">{result.address_myenv}</p>
             <p className="text-base">{result.description_myenv}</p>
+            <p className="text-xl font-bold">Number of Market Stores</p>
+
             <p className="text-base">{result.no_of_market_stalls}</p>
+
+            <p className="text-xl font-bold">Number of Food Stores</p>
             <p className="text-base">{result.no_of_food_stalls}</p>
 
-            <p className="text-xl">Q1 Cleaning Date</p>
+            <p className="text-xl font-bold">Q1 Cleaning Date</p>
 
-            <p className="text-base">{result.q1_cleaningstartdate}</p>
-            <p className="text-base">{result.q1_cleaningenddate}</p>
-            <p className="text-base">{result.remarks_q1}</p>
+            <p className="text-base">
+                {result.q1_cleaningstartdate} to {result.q1_cleaningenddate}
+            </p>
 
-            <p className="text-xl">Q2 Cleaning Date</p>
+            {result.remarks_q1 == "nil" ? (
+                <div></div>
+            ) : (
+                <p className="text-base">{result.remarks_q1}</p>
+            )}
 
-            <p className="text-base">{result.q2_cleaningstartdate}</p>
-            <p className="text-base">{result.q2_cleaningenddate}</p>
-            <p className="text-base">{result.remarks_q2}</p>
+            <p className="text-xl font-bold">Q2 Cleaning Date</p>
 
-            <p className="text-xl">Q3 Cleaning Date</p>
+            <p className="text-base">
+                {result.q2_cleaningstartdate} to {result.q2_cleaningenddate}
+            </p>
+            {result.remarks_q2 == "nil" ? (
+                <div></div>
+            ) : (
+                <p className="text-base">{result.remarks_q2}</p>
+            )}
 
-            <p className="text-base">{result.q3_cleaningstartdate}</p>
-            <p className="text-base">{result.q3_cleaningenddate}</p>
-            <p className="text-base">{result.remarks_q3}</p>
+            <p className="text-xl font-bold">Q3 Cleaning Date</p>
 
-            <p className="text-xl">Q4 Cleaning Date</p>
+            <p className="text-base">
+                {result.q3_cleaningstartdate} to {result.q3_cleaningenddate}
+            </p>
+            {result.remarks_q3 == "nil" ? (
+                <div></div>
+            ) : (
+                <p className="text-base">{result.remarks_q3}</p>
+            )}
+            <p className="text-xl font-bold">Q4 Cleaning Date</p>
 
-            <p className="text-base">{result.q4_cleaningstartdate}</p>
-            <p className="text-base">{result.q4_cleaningenddate}</p>
-            <p className="text-base">{result.remarks_q4}</p>
-
+            <p className="text-base">
+                {result.q4_cleaningstartdate} to {result.q4_cleaningenddate}
+            </p>
+            {result.remarks_q4 == "nil" ? (
+                <div></div>
+            ) : (
+                <p className="text-base">{result.remarks_q4}</p>
+            )}
             <Map
                 mapboxAccessToken={mapboxToken}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
@@ -112,32 +135,32 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                         </h3>
                         <div className={classes.popupInfo}>
                             <label className={classes.popupLabel}>Code: </label>
-                            <span>{selectedMarker.airport.code}</span>
+                            <span>{selectedMarker.result.code}</span>
                             <br />
                             <label className={classes.popupLabel}>
                                 Country:{" "}
                             </label>
-                            <span>{selectedMarker.airport.country}</span>
+                            <span>{selectedMarker.result.country}</span>
                             <br />
                             <label className={classes.popupLabel}>
                                 Website:{" "}
                             </label>
                             <Link
                                 href={
-                                    selectedMarker.airport.url === ""
+                                    selectedMarker.result.url === ""
                                         ? "#"
-                                        : selectedMarker.airport.url
+                                        : selectedMarker.result.url
                                 }
                                 target={
-                                    selectedMarker.airport.url === ""
+                                    selectedMarker.result.url === ""
                                         ? null
                                         : "_blank"
                                 }
                                 className={classes.popupWebUrl}
                             >
-                                {selectedMarker.airport.url === ""
+                                {selectedMarker.result.url === ""
                                     ? "Nil"
-                                    : selectedMarker.airport.url}
+                                    : selectedMarker.result.url}
                             </Link>
                         </div>
                     </Popup>
