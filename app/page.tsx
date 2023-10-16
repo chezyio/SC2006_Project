@@ -26,19 +26,7 @@ async function getHawkers() {
     return data.result.records;
 }
 
-// async function getHawker(search) {
-//     const res = await fetch(
-//         "https://data.gov.sg/api/action/datastore_search?resource_id=b80cb643-a732-480d-86b5-e03957bc82aa&limit=9999"
-//     );
-//     const data = await res.json();
-//     const filtered = data.filter((x) => x.name == search);
 
-//     if (!res.ok) {
-//         throw new Error("Failed to fetch data");
-//     }
-
-//     return filtered.result.records;
-// }
 
 const supabaseUrl = "https://xvfstqmoxozecejgkhbo.supabase.co";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

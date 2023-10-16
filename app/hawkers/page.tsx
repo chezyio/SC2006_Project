@@ -1,6 +1,11 @@
 import * as React from "react";
+import { useState, useRef } from "react";
 import HawkerCard from "../components/HawkerCard";
-import Map from "../components/Map";
+
+import { IoMdPin } from "react-icons/io";
+import hawkers from "../utils/hawkers";
+import { Suspense } from "react";
+import Map2 from "../components/Map";
 
 async function getHawkers() {
     const res = await fetch(
@@ -15,18 +20,20 @@ async function getHawkers() {
     return data.result.records;
 }
 
-const page = async () => {
-    const hawkers = await getHawkers();
-    console.log(hawkers);
+let allHawkers;
+
+async function Hawkers({ hawkerId }: { hawkerId: string }) {
+    allHawkers = await getHawkers();
+}
+
+const page = ({ params: { hawkerId } }: { params: { hawkerId: string } }) => {
     return (
-        <div>
-            <div>
-                {hawkers.map((hawker, num) => {
-                    return <HawkerCard key={num} hawker={hawker} />;
-                })}
+        <Suspense fallback={<div>Loading...</div>}>
+            <Hawkers />
+            <div className="h-full">
+                <Map2 hawkers={allHawkers} />
             </div>
-            {/* <Map /> */}
-        </div>
+        </Suspense>
     );
 };
 
