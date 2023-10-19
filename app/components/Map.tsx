@@ -8,6 +8,8 @@ import Map, {
     GeolocateControl,
 } from "react-map-gl";
 
+import Link from "next/link";
+
 import Image from "next/image";
 import "mapbox-gl/dist/mapbox-gl.css";
 import React from "react";
@@ -39,9 +41,9 @@ const Map2 = ({ hawkers }) => {
                     longitude: 103.8198,
                     zoom: 10,
                 }}
-                style={{ width: 1600, height: 800 }}
+                style={{ width: "100%", height: 800 }}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
-                maxZoom={18}
+                maxZoom={16}
                 minZoom={3}
                 ref={mapRef}
             >
@@ -89,29 +91,30 @@ const Map2 = ({ hawkers }) => {
                             <span>
                                 {selectedMarker.result.no_of_food_stalls}
                             </span>
+                            <br />
 
-                            {/* <Link
+                            <Link
                                 href={
                                     selectedMarker.result.url === ""
                                         ? "#"
-                                        : selectedMarker.result.url
+                                        : selectedMarker.result.google_3d_view
                                 }
                                 target={
-                                    selectedMarker.result.url === ""
+                                    selectedMarker.result.google_3d_view === ""
                                         ? null
                                         : "_blank"
                                 }
                                 className={classes.popupWebUrl}
                             >
-                                {selectedMarker.result.url === ""
+                                {selectedMarker.result.google_3d_view === ""
                                     ? "Nil"
-                                    : selectedMarker.result.url}
-                            </Link> */}
+                                    : selectedMarker.result.google_3d_view}
+                            </Link>
                         </div>
                     </Popup>
                 ) : null}
 
-                {hawkers.map((hawker, index) => {
+                {hawkers?.map((hawker, index) => {
                     return (
                         <Marker
                             key={index}

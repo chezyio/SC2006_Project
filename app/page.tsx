@@ -1,17 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
+import React from "react";
+
 import HawkerCard from "./components/HawkerCard";
-import Campus from "../public/campus.svg";
 import Food from "../public/food.png";
 import Navi from "../public/navi.png";
 import Coffee from "../public/coffee.png";
-import Work from "../public/work.png";
 import Student from "../public/student.png";
+import Food2 from "../public/food2.png";
 
 import { createClient } from "@supabase/supabase-js";
 
-import Search from "./components/Search";
 import { useSearchParams } from "next/navigation";
+
+import { Payment, columns } from "./components/columns";
+import { DataTable } from "./components/data-table";
+import { DatePicker } from "./components/date-picker";
+import hawkers from "./utils/hawkers";
 
 async function getHawkers() {
     const res = await fetch(
@@ -26,49 +31,24 @@ async function getHawkers() {
     return data.result.records;
 }
 
+function addWeeks(date, weeks) {
+    date.setDate(date.getDate() + 7 * weeks);
 
+    return date;
+}
 
 const supabaseUrl = "https://xvfstqmoxozecejgkhbo.supabase.co";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-import AuthForm from "./auth-form";
-
-export default async function Home({
-    params,
-    searchParams,
-}: {
-    params: { slug: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-    const hawkers = await getHawkers();
-
-    let all;
-    const searchQuery = searchParams.search?.toString().toLowerCase();
-    if (searchQuery) {
-        const queryWords = searchQuery.split(" ");
-        all = hawkers.filter((hawker) => {
-            const name = hawker.name.toLowerCase();
-            console.log(name);
-
-            return queryWords.some((word) => name.includes(word));
-        });
-    }
-
-    if (!searchQuery) {
-        all = hawkers;
-    }
-
-    console.log(all);
-
-
-    
+export default async function Home() {
+    const data = await getHawkers();
 
     return (
         <div>
             <main className="flex min-h-screen flex-col">
-                <div className="text-center">
-                    <p className="text-sm font-semibold mb-4">
+                <div className="text-center my-12">
+                    <p className="text-sm font-semibold mb-6">
                         Explore, Eat, Enjoy with HawkerHub
                     </p>
                     <p className="text-4xl lg:text-5xl font-bold mb-10">
@@ -76,47 +56,45 @@ export default async function Home({
                         <br />
                         One Hawker at a Time
                     </p>
-
-                    <div className="relative flex h-96 w-full">
-                        <Image
-                            src="https://images.unsplash.com/photo-1624167481478-5faf64c87ecf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=4140&q=80"
-                            alt="image"
-                            fill={true}
-                            className="rounded-xl object-cover"
-                        />
-                    </div>
                 </div>
 
-                <div className="my-24">
-                    <div className="text-center">
-                        <p className="text-4xl lg:text-5xl font-bold mb-10">
-                            Don't leave your dining <br />
-                            experience to chance
-                        </p>
-                    </div>
+                <div className="">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="lg:row-span-2  rounded-2xl flex flex-col justify-between">
-                            <Image src={Food} alt="image" />
-                            <div className="p-8">
-                                <p className="text-2xl font-bold mb-2">
-                                    Experience
-                                </p>
-                                <p className="text-md">
-                                    Use our information check to access hawker
-                                    center insights, including specialty dishes,
-                                    pricing, and user reviews, ensuring a
-                                    satisfying meal.
-                                </p>
+                        <div className="lg:col-span-2 rounded-xl bg-neutral-100">
+                            <div className="flex flex-row">
+                                <div className="py-24 pl-24 basis-2/3">
+                                    <p className="text-3xl lg:text-3xl font-bold">
+                                        Connecting Taste Buds,
+                                        <br />
+                                        One Hawker at a Time
+                                    </p>
+                                    <p className="my-4 mb-10">
+                                        Use our information check to access
+                                        hawker center insights, including
+                                        specialty dishes, pricing, and user
+                                        reviews, ensuring a satisfying meal
+                                    </p>
+                                    <a
+                                        href="#"
+                                        className="rounded-full bg-blue-400 px-3.5 py-2.5 text-xs text-white"
+                                    >
+                                        Get Started
+                                    </a>
+                                </div>
+
+                                <div className="basis-1/3 flex items-center">
+                                    <Image src={Food} alt="image" />
+                                </div>
                             </div>
                         </div>
-                        <div className="lg:col-span-2 flex flex-col lg:flex-row  rounded-2xl">
-                            <Image src={Work} alt="image" />
-                            <div className="p-8">
+                        <div className="lg:col-span-1 rounded-xl bg-neutral-100">
+                            {/* <Image src={Work} alt="image" /> */}
+                            <div className="p-16">
                                 <div>
-                                    <p className="text-2xl font-bold mb-2">
-                                        Stay Informed
+                                    <p className="text-2xl lg:text-3xl font-bold">
+                                        Convenience
                                     </p>
-                                    <p className="text-md">
+                                    <p className="my-4">
                                         Get the most out of your hawker center
                                         visits by staying informed. Our
                                         information check offers you stall
@@ -126,11 +104,11 @@ export default async function Home({
                                 </div>
                             </div>
                         </div>
-                        <div className=" rounded-2xl">
+                        <div className="rounded-xl bg-neutral-100">
                             <Image src={Coffee} alt="image" />
-                            <div className="p-8">
+                            <div className="px-16 pb-16">
                                 <p className="text-2xl font-bold mb-2">
-                                    Convenience
+                                    Information
                                 </p>
                                 <p className="text-md">
                                     Whether you're a local foodie or a curious
@@ -140,59 +118,70 @@ export default async function Home({
                                 </p>
                             </div>
                         </div>
-                        <div className=" rounded-2xl">
+                        <div className="rounded-xl bg-neutral-100">
                             <Image src={Navi} alt="image" />
-                            <div className="p-8">
+                            <div className="px-16 pb-16">
                                 <p className="text-2xl font-bold mb-2">
-                                    Campus Activities
+                                    Location
                                 </p>
                                 <p className="text-md">
-                                    Living on campus makes it easier to engage
-                                    in various extracurricular activities,
-                                    clubs, and organizations. Students can
-                                    participate in events and opportunities that
-                                    might not be as accessible to commuters.
+                                    Find out what's nearby
                                 </p>
+                            </div>
+                        </div>
+                        <div className="rounded-xl bg-neutral-100">
+                            <Image src={Food2} alt="image" />
+                            <div className="px-16 pb-16">
+                                <p className="text-2xl font-bold mb-2">x </p>
+                                <p className="text-md">x</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h1>Table that shows all hawkers</h1>
-                <h1>Table can filter/sort by quarters cleaning data</h1>
-                <h1>Login to favourite hawker</h1>
-                <h1>search for nearest hawker</h1>
-                <h1>search for nearest hawker</h1>
+                <p className="text-4xl font-bold my-12">Closure Dates</p>
 
-                <Search />
-                <h1>{searchParams?.search || "Hello!"}</h1>
+                <DataTable columns={columns} data={data} />
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 my-24">
-                    {all
-                        // .filter((hawker) => hawker.name == searchParams?.search)
-                        .map((hawker) => {
-                            return (
-                                <Link
-                                    href={"/hawkers/" + hawker._id}
-                                    key={hawker._id}
-                                >
-                                    <HawkerCard hawker={hawker} />
-                                </Link>
-                            );
-                        })}
-                </div>
-                {/* <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 my-24">
-                    {hawkers.map((hawker) => {
-                        return (
-                            <Link
-                                href={"/hawkers/" + hawker._id}
-                                key={hawker._id}
-                            >
-                                <HawkerCard hawker={hawker} />
-                            </Link>
-                        );
+                <p className="text-4xl font-bold my-12">Nearby Dates</p>
+                <DatePicker />
+                <br />
+                <p>
+                    Below are the list of hawkers which are going to be closed
+                    for the specified date
+                </p>
+                <br />
+
+                <div>
+                    {data.map((h) => {
+                        const test = h.q4_cleaningstartdate;
+                        if (test != "TBC") {
+                            const q4d = new Date(
+                                h.q4_cleaningstartdate
+                            ).toLocaleDateString("en-US");
+
+                            const cur = new Date();
+                            const addedCur = addWeeks(
+                                cur,
+                                5
+                            ).toLocaleDateString("en-GB");
+
+                            if (q4d < addedCur) {
+                                // api date format = ddmmyyyy
+                                // system date format = mmddyyyy
+                                return (
+                                    <div>
+                                        <div>
+                                            {h.name} - Q4 Start date —{" "}
+                                            {h.q4_cleaningstartdate}
+                                            is before modified date {addedCur}
+                                        </div>
+                                    </div>
+                                );
+                            }
+                        }
                     })}
-                </div> */}
+                </div>
             </main>
         </div>
     );
