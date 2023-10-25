@@ -1,4 +1,6 @@
 "use client";
+const moment = require("moment");
+
 import { useState, useRef } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { IoMdPin } from "react-icons/io";
@@ -53,11 +55,34 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
         });
     };
 
+    const q1d = moment(result.q1_cleaningstartdate, "DD/MM/YYYY");
+    const q2d = moment(result.q2_cleaningstartdate, "DD/MM/YYYY");
+    const q3d = moment(result.q3_cleaningstartdate, "DD/MM/YYYY");
+    const q4d = moment(result.q4_cleaningstartdate, "DD/MM/YYYY");
+
+    const today = moment();
+
+    const diff1 = q1d.diff(today, "days");
+    const diff2 = q2d.diff(today, "days");
+    const diff3 = q3d.diff(today, "days");
+    const diff4 = q4d.diff(today, "days");
+
     return (
-        <div className={classes.mainStyle}>
+        <div>
             <p className="text-4xl font-bold">{result.name}</p>
             <p className="text-base my-4">{result.address_myenv}</p>
             <p className="text-base">{result.description_myenv}</p>
+
+            <>
+                {diff1 > 0 || diff2 > 0 || diff3 > 0 || diff4 > 0 ? (
+                    <p className="text-4xl font-bold">
+                        {diff4} days to next cleaning day
+                    </p>
+                ) : (
+                    <p>testing</p>
+                )}
+            </>
+
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 my-12">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -292,108 +317,88 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                     </CardContent>
                 </Card>
             </div>
-
-            {result.remarks_q1 == "nil" ? (
-                <div></div>
-            ) : (
-                <p className="text-base">{result.remarks_q1}</p>
-            )}
-
-            {result.remarks_q2 == "nil" ? (
-                <div></div>
-            ) : (
-                <p className="text-base">{result.remarks_q2}</p>
-            )}
-
-            {result.remarks_q3 == "nil" ? (
-                <div></div>
-            ) : (
-                <p className="text-base">{result.remarks_q3}</p>
-            )}
-
-            {result.remarks_q4 == "nil" ? (
-                <div></div>
-            ) : (
-                <p className="text-base">{result.remarks_q4}</p>
-            )}
-            <Map
-                mapboxAccessToken={mapboxToken}
-                mapStyle="mapbox://styles/mapbox/streets-v12"
-                // style={classes.mapStyle}
-                initialViewState={{
-                    latitude: 1.3521,
-                    longitude: 103.8198,
-                    zoom: 10,
-                }}
-                maxZoom={20}
-                minZoom={3}
-                ref={mapRef}
-                // attributes...
-            >
-                {/*Geolocate and Navigation controls...*/}
-                <GeolocateControl position="top-left" />
-                <NavigationControl position="top-left" />
-
-                {selectedMarker ? (
-                    <Popup
-                        offset={25}
-                        latitude={selectedMarker.result.latitude_hc}
-                        longitude={selectedMarker.result.longitude_hc}
-                        onClose={() => {
-                            setSelectedMarker(null);
-                        }}
-                        closeButton={false}
-                    >
-                        <h3 className={classes.popupTitle}>
-                            {selectedMarker.result.name}
-                        </h3>
-                        <div className={classes.popupInfo}>
-                            <label className={classes.popupLabel}>Code: </label>
-                            <span>{selectedMarker.result.code}</span>
-                            <br />
-                            <label className={classes.popupLabel}>
-                                Country:{" "}
-                            </label>
-                            <span>{selectedMarker.result.country}</span>
-                            <br />
-                            <label className={classes.popupLabel}>
-                                Website:{" "}
-                            </label>
-                            <Link
-                                href={
-                                    selectedMarker.result.url === ""
-                                        ? "#"
-                                        : selectedMarker.result.url
-                                }
-                                target={
-                                    selectedMarker.result.url === ""
-                                        ? null
-                                        : "_blank"
-                                }
-                                className={classes.popupWebUrl}
-                            >
-                                {selectedMarker.result.url === ""
-                                    ? "Nil"
-                                    : selectedMarker.result.url}
-                            </Link>
-                        </div>
-                    </Popup>
-                ) : null}
-
-                <Marker
-                    key={result._id}
-                    longitude={result.longitude_hc}
-                    latitude={result.latitude_hc}
+            <div>
+                <Map
+                    mapboxAccessToken={mapboxToken}
+                    mapStyle="mapbox://styles/mapbox/streets-v12"
+                    initialViewState={{
+                        latitude: 1.3521,
+                        longitude: 103.8198,
+                        zoom: 10,
+                    }}
+                    style={{ width: "100%", height: 800, borderRadius: "8px" }}
+                    maxZoom={20}
+                    minZoom={3}
+                    ref={mapRef}
+                    // attributes...
                 >
-                    <button
-                        type="button"
-                        className="cursor-pointer"
-                        onClick={(e) => zoomToSelectedLoc(e, result)}
+                    {/*Geolocate and Navigation controls...*/}
+                    <GeolocateControl position="top-left" />
+                    <NavigationControl position="top-left" />
+
+                    {selectedMarker ? (
+                        <Popup
+                            offset={25}
+                            latitude={selectedMarker.result.latitude_hc}
+                            longitude={selectedMarker.result.longitude_hc}
+                            onClose={() => {
+                                setSelectedMarker(null);
+                            }}
+                            closeButton={false}
+                        >
+                            <h3 className={classes.popupTitle}>
+                                {selectedMarker.result.name}
+                            </h3>
+                            <div className={classes.popupInfo}>
+                                <label className={classes.popupLabel}>
+                                    Code:{" "}
+                                </label>
+                                <span>{selectedMarker.result.code}</span>
+                                <br />
+                                <label className={classes.popupLabel}>
+                                    Country:{" "}
+                                </label>
+                                <span>{selectedMarker.result.country}</span>
+                                <br />
+                                <label className={classes.popupLabel}>
+                                    Website:{" "}
+                                </label>
+                                <Link
+                                    href={
+                                        selectedMarker.result.url === ""
+                                            ? "#"
+                                            : selectedMarker.result.url
+                                    }
+                                    target={
+                                        selectedMarker.result.url === ""
+                                            ? null
+                                            : "_blank"
+                                    }
+                                    className={classes.popupWebUrl}
+                                >
+                                    {selectedMarker.result.url === ""
+                                        ? "Nil"
+                                        : selectedMarker.result.url}
+                                </Link>
+                            </div>
+                        </Popup>
+                    ) : null}
+
+                    <Marker
+                        key={result._id}
+                        longitude={result.longitude_hc}
+                        latitude={result.latitude_hc}
                     >
-                        {<IoMdPin size={30} color="tomato" />}
-                    </button>
-                </Marker>
-            </Map>
+                        <button
+                            type="button"
+                            className="cursor-pointer"
+                            onClick={(e) => zoomToSelectedLoc(e, result)}
+                        >
+                            {<IoMdPin size={30} color="tomato" />}
+                        </button>
+                    </Marker>
+                </Map>
+            </div>
         </div>
     );
 };

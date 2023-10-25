@@ -15,8 +15,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import React from "react";
 import { IoMdPin } from "react-icons/io";
 
-import classes from "./Map.module.css";
-
 const Map2 = ({ hawkers }) => {
     const [selectedMarker, setSelectedMarker] = useState(null);
 
@@ -41,7 +39,7 @@ const Map2 = ({ hawkers }) => {
                     longitude: 103.8198,
                     zoom: 10,
                 }}
-                style={{ width: "100%", height: 800 }}
+                style={{ width: "100%", height: 800, borderRadius: "8px" }}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
                 maxZoom={16}
                 minZoom={3}
@@ -69,25 +67,19 @@ const Map2 = ({ hawkers }) => {
                             height={200}
                         />
 
-                        <h3 className={classes.popupTitle}>
+                        <p className="text-base font-bold">
                             {selectedMarker.result.name}
-                        </h3>
-                        <div className={classes.popupInfo}>
-                            <label className={classes.popupLabel}>
-                                Location:{" "}
-                            </label>
+                        </p>
+                        <div>
+                            <label>Location: </label>
                             <span>{selectedMarker.result.address_myenv}</span>
                             <br />
-                            <label className={classes.popupLabel}>
-                                Number of Market Stores:{" "}
-                            </label>
+                            <label>Number of Market Stores: </label>
                             <span>
                                 {selectedMarker.result.no_of_market_stalls}
                             </span>
                             <br />
-                            <label className={classes.popupLabel}>
-                                Number of Food Stores:{" "}
-                            </label>
+                            <label>Number of Food Stores: </label>
                             <span>
                                 {selectedMarker.result.no_of_food_stalls}
                             </span>
@@ -104,7 +96,7 @@ const Map2 = ({ hawkers }) => {
                                         ? null
                                         : "_blank"
                                 }
-                                className={classes.popupWebUrl}
+                                className="text-blue-500"
                             >
                                 {selectedMarker.result.google_3d_view === ""
                                     ? "Nil"

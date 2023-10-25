@@ -11,16 +11,24 @@ export default async function Account() {
         data: { session },
     } = await supabase.auth.getSession();
 
+    const { data, error } = await supabase.from("favourites").select(`*`);
+    console.log(data);
+
     return session ? (
-        <AccountForm session={session} />
+        <div>
+            <AccountForm session={session} />
+        </div>
     ) : (
         // <AccountForm session={} />
-        <div className="row">
-            <div className="col-6">
-                <h1 className="header">Supabase Auth + Storage</h1>
-            </div>
-            <div className="col-6 auth-widget">
-                <AuthForm />
+
+        <div>
+            <div className="row">
+                <div className="col-6">
+                    <h1 className="header">Supabase Auth + Storage</h1>
+                </div>
+                <div className="col-6 auth-widget">
+                    <AuthForm />
+                </div>
             </div>
         </div>
     );

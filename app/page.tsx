@@ -1,4 +1,4 @@
-import Link from "next/link";
+const moment = require("moment");
 import Image from "next/image";
 import React from "react";
 
@@ -6,17 +6,20 @@ import HawkerCard from "./components/HawkerCard";
 import Food from "../public/food.png";
 import Navi from "../public/navi.png";
 import Coffee from "../public/coffee.png";
-import Student from "../public/student.png";
 import Food2 from "../public/food2.png";
 
-import { createClient } from "@supabase/supabase-js";
-
-import { useSearchParams } from "next/navigation";
-
-import { Payment, columns } from "./components/columns";
+import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { DatePicker } from "./components/date-picker";
-import hawkers from "./utils/hawkers";
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 async function getHawkers() {
     const res = await fetch(
@@ -30,16 +33,6 @@ async function getHawkers() {
 
     return data.result.records;
 }
-
-function addWeeks(date, weeks) {
-    date.setDate(date.getDate() + 7 * weeks);
-
-    return date;
-}
-
-const supabaseUrl = "https://xvfstqmoxozecejgkhbo.supabase.co";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function Home() {
     const data = await getHawkers();
@@ -146,39 +139,74 @@ export default async function Home() {
                 <p className="text-4xl font-bold my-12">Nearby Dates</p>
                 <DatePicker />
                 <br />
-                <p>
-                    Below are the list of hawkers which are going to be closed
-                    for the specified date
-                </p>
-                <br />
 
-                <div>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 my-12">
                     {data.map((h) => {
-                        const test = h.q4_cleaningstartdate;
-                        if (test != "TBC") {
-                            const q4d = new Date(
-                                h.q4_cleaningstartdate
-                            ).toLocaleDateString("en-US");
+                        const mydate = moment(
+                            h.q4_cleaningstartdate,
+                            "DD/MM/YYYY"
+                        );
+                        const modified = moment(mydate);
 
-                            const cur = new Date();
-                            const addedCur = addWeeks(
-                                cur,
-                                5
-                            ).toLocaleDateString("en-GB");
+                        const today = moment();
 
-                            if (q4d < addedCur) {
-                                // api date format = ddmmyyyy
-                                // system date format = mmddyyyy
-                                return (
-                                    <div>
-                                        <div>
-                                            {h.name} - Q4 Start date —{" "}
+                        const cur = moment().add(4, "weeks");
+
+                        if (cur > modified && modified > today) {
+                            return (
+                                <Card>
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                        <CardTitle className="text-sm font-medium">
+                                            {h.name}
+                                        </CardTitle>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="#171717"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            className="lucide lucide-calendar-days"
+                                        >
+                                            <rect
+                                                width="18"
+                                                height="18"
+                                                x="3"
+                                                y="4"
+                                                rx="2"
+                                                ry="2"
+                                            />
+                                            <line
+                                                x1="16"
+                                                x2="16"
+                                                y1="2"
+                                                y2="6"
+                                            />
+                                            <line x1="8" x2="8" y1="2" y2="6" />
+                                            <line
+                                                x1="3"
+                                                x2="21"
+                                                y1="10"
+                                                y2="10"
+                                            />
+                                            <path d="M8 14h.01" />
+                                            <path d="M12 14h.01" />
+                                            <path d="M16 14h.01" />
+                                            <path d="M8 18h.01" />
+                                            <path d="M12 18h.01" />
+                                            <path d="M16 18h.01" />
+                                        </svg>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-2xl font-bold">
                                             {h.q4_cleaningstartdate}
-                                            is before modified date {addedCur}
                                         </div>
-                                    </div>
-                                );
-                            }
+                                    </CardContent>
+                                </Card>
+                            );
                         }
                     })}
                 </div>

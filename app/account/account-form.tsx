@@ -13,19 +13,22 @@ export default function AccountForm({ session }: { session: Session | null }) {
     const [fullname, setFullname] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
     const [website, setWebsite] = useState<string | null>(null);
+    const [favourites, setFavourites] = useState([]);
     const [avatar_url, setAvatarUrl] = useState<string | null>(null);
     const user = session?.user;
 
-    const getProfile = useCallback(async () => {
+    const getProfile = async () => {
         try {
-            setLoading(true);
-
             let { data, error, status } = await supabase
                 .from("profiles")
                 .select(`full_name, username, website, avatar_url`)
                 .eq("id", user?.id)
                 .single();
 
+            const fav = await supabase
+                .from("favourites")
+                .select("*")
+                .eq("user_id", user?.id);
             if (error && status !== 406) {
                 throw error;
             }
@@ -35,13 +38,14 @@ export default function AccountForm({ session }: { session: Session | null }) {
                 setUsername(data.username);
                 setWebsite(data.website);
                 setAvatarUrl(data.avatar_url);
+                setFavourites(fav.data);
             }
         } catch (error) {
             alert("Error loading user data!");
         } finally {
             setLoading(false);
         }
-    }, [user, supabase]);
+    };
 
     useEffect(() => {
         getProfile();
@@ -74,11 +78,14 @@ export default function AccountForm({ session }: { session: Session | null }) {
             alert("Error updating the data!");
         } finally {
             setLoading(false);
+            console.log(favourites);
         }
     }
 
     return (
         <div className="form-widget">
+            <p className="text-4xl font-bold my-12">Profile</p>
+
             <Avatar
                 uid={user!.id}
                 url={avatar_url}
@@ -147,7 +154,12 @@ export default function AccountForm({ session }: { session: Session | null }) {
                 </button>
             </div>
 
-            <div>favourites []</div>
+            <div>
+                {favourites.map((favourite) => {
+                    return <div>{favourite.hawker_id}</div>;
+                })}
+            </div>
+
             <div>
                 <form action="/auth/signout" method="post">
                     <button className="button block" type="submit">

@@ -1,50 +1,10 @@
-// import React from "react";
-// import Link from "next/link";
-
-// import { Fragment } from "react";
-// import { Disclosure, Menu, Transition } from "@headlessui/react";
-// import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-
-// import Image from "next/image";
-
-// const Header = () => {
-//     return (
-//         <header>
-//             <div className="flex flex-col lg:flex-row container max-w-screen-xl justify-between mx-auto p-2">
-//                 <Link href="/" className="font-semibold">
-//                     {/* <Image src={Logo} height={24} width={24} alt="logo" /> */}
-//                     {/* <Image src={Logo_white} height={24} width={24} /> */}
-//                     HawkerHub
-//                 </Link>
-//                 <div className="mt-4 lg:mt-0">
-//                     <Link
-//                         href="/hawkers"
-//                         className="text-sm font-semibold hover:bg-neutral-100 focus:bg-neutral-100 -ml-2 p-2 rounded-md"
-//                     >
-//                         Hawkers
-//                     </Link>
-//                     <Link
-//                         href="/account"
-//                         className="text-sm font-semibold hover:bg-neutral-100 focus:bg-neutral-100 -ml-2 p-2 rounded-md"
-//                     >
-//                         Account
-//                     </Link>
-//                     <Link
-//                         href="/login"
-//                         className="text-sm font-semibold hover:bg-neutral-100 focus:bg-neutral-100 -ml-2 p-2 rounded-md"
-//                     >
-//                         Login
-//                     </Link>
-//                 </div>
-//             </div>
-//         </header>
-//     );
-// };
-
-// export default Header;
-
-import { Fragment, useState } from "react";
+"use client";
+import { useState } from "react";
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "../database.types";
+import { cookies } from "next/headers";
+
 import {
     ArrowPathIcon,
     Bars3Icon,
@@ -54,6 +14,8 @@ import {
     SquaresPlusIcon,
     XMarkIcon,
 } from "@heroicons/react/24/outline";
+
+import { fetchSession } from "../utils/supabase";
 
 export default function Example() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -86,20 +48,18 @@ export default function Example() {
                     >
                         Hawkers
                     </a>
-                    <a
-                        href="/account"
-                        className="text-sm font-semibold leading-6 text-gray-900"
-                    >
-                        Account
-                    </a>
                 </Popover.Group>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a
-                        href="/login"
-                        className="text-sm font-semibold leading-6 text-gray-900"
-                    >
-                        Log in <span aria-hidden="true">&rarr;</span>
-                    </a>
+                    {fetchSession() ? (
+                        <a
+                            href="/account"
+                            className="text-sm font-semibold leading-6 text-gray-900"
+                        >
+                            Account <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    ) : (
+                        <div>Login</div>
+                    )}
                 </div>
             </nav>
             <Dialog
@@ -132,19 +92,13 @@ export default function Example() {
                                 >
                                     Hawkers
                                 </a>
-                                <a
-                                    href="#"
-                                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                    Account
-                                </a>
                             </div>
                             <div className="py-6">
                                 <a
                                     href="/login"
                                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
-                                    Log in
+                                    Login
                                 </a>
                             </div>
                         </div>
