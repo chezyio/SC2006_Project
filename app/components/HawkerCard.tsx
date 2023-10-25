@@ -134,6 +134,7 @@ const HawkerCard = ({ hawker, userId }) => {
                     {
                         user_id: userId,
                         hawker_id: hawker._id,
+                        hawker: hawker
                     },
                 ]);
                 setIsFav(!isFav);

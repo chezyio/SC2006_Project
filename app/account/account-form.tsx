@@ -155,9 +155,16 @@ export default function AccountForm({ session }: { session: Session | null }) {
             </div>
 
             <div>
-                {favourites.map((favourite) => {
-                    return <div>{favourite.hawker_id}</div>;
-                })}
+                <p>Favourite Hawkers</p>
+                <div className="">
+                    {favourites.map((favourite) => {
+                        return (
+                            <div className="p-4 bg-neutral-200 my-2">
+                                <p>{favourite.hawker.name}</p>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
             <div>
