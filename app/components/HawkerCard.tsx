@@ -70,28 +70,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Toggle } from "@/components/ui/toggle";
+import { Star } from "lucide-react";
+
 import { supabase } from "../utils/supabase";
 
 const HawkerCard = ({ hawker, userId }) => {
     const [isFav, setIsFav] = useState(false);
-    // const [userSession, setUserSession] = useState(null);
-    // const [userId, setUserId] = useState(null);
-
-    // useEffect(() => {
-    //     supabase.auth.onAuthStateChange((event, session) => {
-    //         if (event === "SIGNED_IN") {
-    //             // User is signed in
-    //             setUserSession(session);
-    //             setUserId(session.user.id);
-    //             console.log(userId);
-    //         } else if (event === "SIGNED_OUT") {
-    //             // User is signed out
-    //             setUserSession(null);
-    //             setUserId(null);
-    //         }
-    //     });
-    // }, []);
-    // console.log(userId);
 
     useEffect(() => {
         async function checkIfFavorited() {
@@ -142,6 +127,7 @@ const HawkerCard = ({ hawker, userId }) => {
                     .delete()
                     .eq("user_id", userId)
                     .eq("hawker_id", hawker._id);
+                setIsFav(!isFav);
             } else {
                 // Item is not favorited, so add it to favorites
                 await supabase.from("favourites").insert([
@@ -178,9 +164,10 @@ const HawkerCard = ({ hawker, userId }) => {
                 </CardHeader>
             </Link>
             <CardContent>
-                <button onClick={toggleFav}>
+                <button onClick={toggleFav}></button>
+                <Toggle pressed={isFav} onPressedChange={() => toggleFav()}>
                     {isFav ? "Remove from Favorites" : "Add to Favorites"}
-                </button>
+                </Toggle>
             </CardContent>
         </Card>
     );
