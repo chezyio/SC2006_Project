@@ -7,6 +7,12 @@ import {
     createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
+import FavouriteCard from "../components/FavouriteCard";
+
 export default function AccountForm({ session }: { session: Session | null }) {
     const supabase = createClientComponentClient<Database>();
     const [loading, setLoading] = useState(true);
@@ -49,7 +55,8 @@ export default function AccountForm({ session }: { session: Session | null }) {
 
     useEffect(() => {
         getProfile();
-    }, [user, getProfile]);
+    }, [user]);
+    // }, [user, getProfile]);
 
     async function updateProfile({
         username,
@@ -78,7 +85,6 @@ export default function AccountForm({ session }: { session: Session | null }) {
             alert("Error updating the data!");
         } finally {
             setLoading(false);
-            console.log(favourites);
         }
     }
 
@@ -100,46 +106,47 @@ export default function AccountForm({ session }: { session: Session | null }) {
                     });
                 }}
             />
-            <div>
-                <label htmlFor="email">Email</label>
-                <input
-                    id="email"
-                    type="text"
-                    value={session?.user.email}
-                    disabled
-                />
-            </div>
-            <div>
-                <label htmlFor="fullName">Full Name</label>
-                <input
-                    id="fullName"
-                    type="text"
-                    value={fullname || ""}
-                    onChange={(e) => setFullname(e.target.value)}
-                />
-            </div>
-            <div>
-                <label htmlFor="username">Username</label>
-                <input
-                    id="username"
-                    type="text"
-                    value={username || ""}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-            </div>
-            <div>
-                <label htmlFor="website">Website</label>
-                <input
-                    id="website"
-                    type="url"
-                    value={website || ""}
-                    onChange={(e) => setWebsite(e.target.value)}
-                />
-            </div>
 
-            <div>
-                <button
-                    className="button primary block"
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 my-24">
+                <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                        type="email"
+                        id="email"
+                        value={session?.user.email}
+                        disabled
+                    />
+                </div>
+                <div>
+                    <Label htmlFor="email">Full Name</Label>
+                    <Input
+                        type="text"
+                        id="fullName"
+                        value={fullname || ""}
+                        onChange={(e) => setFullname(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <Label htmlFor="username">Username</Label>
+                    <Input
+                        type="text"
+                        id="username"
+                        value={username || ""}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <Label htmlFor="website">Website</Label>
+                    <Input
+                        type="url"
+                        id="website"
+                        value={website || ""}
+                        onChange={(e) => setWebsite(e.target.value)}
+                    />
+                </div>
+            </div>
+            <div className="flex gap-4">
+                <Button
                     onClick={() =>
                         updateProfile({
                             fullname,
@@ -151,28 +158,20 @@ export default function AccountForm({ session }: { session: Session | null }) {
                     disabled={loading}
                 >
                     {loading ? "Loading ..." : "Update"}
-                </button>
+                </Button>
+
+                <form action="/auth/signout" method="post">
+                    <Button type="submit">Sign Out</Button>
+                </form>
             </div>
 
             <div>
-                <p>Favourite Hawkers</p>
-                <div className="">
+                <p className="text-4xl font-bold my-12">Favourites</p>
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 my-4">
                     {favourites.map((favourite) => {
-                        return (
-                            <div className="p-4 bg-neutral-200 my-2">
-                                <p>{favourite.hawker.name}</p>
-                            </div>
-                        );
+                        return <FavouriteCard favourite={favourite} />;
                     })}
                 </div>
-            </div>
-
-            <div>
-                <form action="/auth/signout" method="post">
-                    <button className="button block" type="submit">
-                        Sign out
-                    </button>
-                </form>
             </div>
         </div>
     );

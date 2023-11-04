@@ -7,6 +7,7 @@ import Food from "../public/food.png";
 import Navi from "../public/navi.png";
 import Coffee from "../public/coffee.png";
 import Food2 from "../public/food2.png";
+import Calendar from "../public/calendar.png";
 
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
@@ -20,6 +21,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { CalendarDays } from "lucide-react";
 
 async function getHawkers() {
     const res = await fetch(
@@ -41,7 +43,7 @@ export default async function Home() {
         <div>
             <main className="flex min-h-screen flex-col">
                 <div className="text-center my-12">
-                    <p className="text-sm font-semibold mb-6">
+                    <p className="text-sm font-semibold mb-6 text-neutral-500">
                         Explore, Eat, Enjoy with HawkerHub
                     </p>
                     <p className="text-4xl lg:text-5xl font-bold mb-10">
@@ -57,15 +59,11 @@ export default async function Home() {
                             <div className="flex flex-row">
                                 <div className="py-24 pl-24 basis-2/3">
                                     <p className="text-3xl lg:text-3xl font-bold">
-                                        Connecting Taste Buds,
-                                        <br />
-                                        One Hawker at a Time
+                                        Iconic Tastes
                                     </p>
                                     <p className="my-4 mb-10">
-                                        Use our information check to access
-                                        hawker center insights, including
-                                        specialty dishes, pricing, and user
-                                        reviews, ensuring a satisfying meal
+                                        Savor must-try local dishes and culinary
+                                        specialties
                                     </p>
                                     <a
                                         href="#"
@@ -75,26 +73,25 @@ export default async function Home() {
                                     </a>
                                 </div>
 
-                                <div className="basis-1/3 flex items-center">
+                                <div className="basis-1/3 flex items-center py-8">
                                     <Image src={Food} alt="image" />
                                 </div>
                             </div>
                         </div>
                         <div className="lg:col-span-1 rounded-xl bg-neutral-100">
-                            {/* <Image src={Work} alt="image" /> */}
-                            <div className="p-16">
+                            <div className="px-16 pt-16">
                                 <div>
                                     <p className="text-2xl lg:text-3xl font-bold">
                                         Convenience
                                     </p>
                                     <p className="my-4">
                                         Get the most out of your hawker center
-                                        visits by staying informed. Our
-                                        information check offers you stall
-                                        recommendations, allergen information,
-                                        and even special promotions
+                                        visits by staying informed
                                     </p>
                                 </div>
+                            </div>
+                            <div className="px-16 relative bottom--4 dwaoverflow-hidden">
+                                <Image src={Calendar} alt="image" />
                             </div>
                         </div>
                         <div className="rounded-xl bg-neutral-100">
@@ -115,18 +112,24 @@ export default async function Home() {
                             <Image src={Navi} alt="image" />
                             <div className="px-16 pb-16">
                                 <p className="text-2xl font-bold mb-2">
-                                    Location
+                                    Adventure
                                 </p>
                                 <p className="text-md">
-                                    Find out what's nearby
+                                    Find out more about hawker centres around
+                                    you
                                 </p>
                             </div>
                         </div>
                         <div className="rounded-xl bg-neutral-100">
                             <Image src={Food2} alt="image" />
                             <div className="px-16 pb-16">
-                                <p className="text-2xl font-bold mb-2">x </p>
-                                <p className="text-md">x</p>
+                                <p className="text-2xl font-bold mb-2">
+                                    Community Vibes
+                                </p>
+                                <p className="text-md">
+                                    Experience the local culture and mingle with
+                                    the community
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -136,7 +139,7 @@ export default async function Home() {
 
                 <DataTable columns={columns} data={data} />
 
-                <p className="text-4xl font-bold my-12">Nearby Dates</p>
+                {/* <p className="text-4xl font-bold my-12">Nearby Dates</p>
                 <DatePicker />
                 <br />
 
@@ -159,46 +162,7 @@ export default async function Home() {
                                         <CardTitle className="text-sm font-medium">
                                             {h.name}
                                         </CardTitle>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="#171717"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            className="lucide lucide-calendar-days"
-                                        >
-                                            <rect
-                                                width="18"
-                                                height="18"
-                                                x="3"
-                                                y="4"
-                                                rx="2"
-                                                ry="2"
-                                            />
-                                            <line
-                                                x1="16"
-                                                x2="16"
-                                                y1="2"
-                                                y2="6"
-                                            />
-                                            <line x1="8" x2="8" y1="2" y2="6" />
-                                            <line
-                                                x1="3"
-                                                x2="21"
-                                                y1="10"
-                                                y2="10"
-                                            />
-                                            <path d="M8 14h.01" />
-                                            <path d="M12 14h.01" />
-                                            <path d="M16 14h.01" />
-                                            <path d="M8 18h.01" />
-                                            <path d="M12 18h.01" />
-                                            <path d="M16 18h.01" />
-                                        </svg>
+                                        <CalendarDays />
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-2xl font-bold">
@@ -209,7 +173,7 @@ export default async function Home() {
                             );
                         }
                     })}
-                </div>
+                </div> */}
             </main>
         </div>
     );

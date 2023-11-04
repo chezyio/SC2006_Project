@@ -1,5 +1,7 @@
 import * as React from "react";
 import HawkerCard from "../components/HawkerCard";
+
+
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Database } from "../database.types";

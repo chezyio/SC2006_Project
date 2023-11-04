@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "../database.types";
@@ -19,6 +19,12 @@ import { fetchSession } from "../utils/supabase";
 
 export default function Example() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const userSession = fetchSession();
+        setIsLoggedIn(!!userSession);
+    }, []);
 
     return (
         <header className="bg-white">
@@ -50,15 +56,20 @@ export default function Example() {
                     </a>
                 </Popover.Group>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    {fetchSession() ? (
+                    {isLoggedIn ? (
                         <a
                             href="/account"
                             className="text-sm font-semibold leading-6 text-gray-900"
                         >
-                            Account <span aria-hidden="true">&rarr;</span>
+                            Sign Out <span aria-hidden="true">&rarr;</span>
                         </a>
                     ) : (
-                        <div>Login</div>
+                        <a
+                            href="/account"
+                            className="text-sm font-semibold leading-6 text-gray-900"
+                        >
+                            Sign In
+                        </a>
                     )}
                 </div>
             </nav>

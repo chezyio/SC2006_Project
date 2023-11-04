@@ -4,8 +4,9 @@ const moment = require("moment");
 import { useState, useRef } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { IoMdPin } from "react-icons/io";
-
+import Image from "next/image";
 import Link from "next/link";
+import { CalendarDays, Store } from "lucide-react";
 
 import Map, {
     Marker,
@@ -24,6 +25,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+
+import { Separator } from "@/components/ui/separator";
+
+import DateRangeComparison from "./DateComparison";
+
 async function getHawkers(id) {
     const res = await fetch(
         "https://data.gov.sg/api/action/datastore_search?resource_id=b80cb643-a732-480d-86b5-e03957bc82aa&limit=9999"
@@ -60,263 +67,160 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
     const q3d = moment(result.q3_cleaningstartdate, "DD/MM/YYYY");
     const q4d = moment(result.q4_cleaningstartdate, "DD/MM/YYYY");
 
-    const today = moment();
-
-    const diff1 = q1d.diff(today, "days");
-    const diff2 = q2d.diff(today, "days");
-    const diff3 = q3d.diff(today, "days");
-    const diff4 = q4d.diff(today, "days");
-
+    const dateRanges = [
+        {
+            name: "Q1",
+            start: q1d,
+            end: result.q1_cleaningenddate,
+        },
+        {
+            name: "Q2",
+            start: q2d,
+            end: result.q2_cleaningenddate,
+        },
+        {
+            name: "Q3",
+            start: q3d,
+            end: result.q3_cleaningenddate,
+        },
+        {
+            name: "Q4",
+            start: q4d,
+            end: result.q4_cleaningenddate,
+        },
+    ];
     return (
-        <div>
-            <p className="text-4xl font-bold">{result.name}</p>
-            <p className="text-base my-4">{result.address_myenv}</p>
-            <p className="text-base">{result.description_myenv}</p>
+        <div className="">
+            <div className="h-96 w-full relative my-4">
+                <Image
+                    src={result.photourl}
+                    style={{ objectFit: "cover" }}
+                    className="rounded-[8px]"
+                    fill
+                />
+            </div>
 
-            <>
-                {diff1 > 0 || diff2 > 0 || diff3 > 0 || diff4 > 0 ? (
-                    <p className="text-4xl font-bold">
-                        {diff4} days to next cleaning day
-                    </p>
-                ) : (
-                    <p>testing</p>
-                )}
-            </>
+            <p className="text-4xl font-bold">{result.name}</p>
+            <p className="text-base my-2 text-neutral-500">
+                {result.address_myenv}
+            </p>
+            <p className="text-xl my-8">{result.description_myenv}</p>
+
+            <DateRangeComparison dateRanges={dateRanges} />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 my-12">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
+                        <CardTitle className="text-lg font-bold">
                             Q1 Cleaning Date
                         </CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#171717"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-calendar-days"
-                        >
-                            <rect
-                                width="18"
-                                height="18"
-                                x="3"
-                                y="4"
-                                rx="2"
-                                ry="2"
-                            />
-                            <line x1="16" x2="16" y1="2" y2="6" />
-                            <line x1="8" x2="8" y1="2" y2="6" />
-                            <line x1="3" x2="21" y1="10" y2="10" />
-                            <path d="M8 14h.01" />
-                            <path d="M12 14h.01" />
-                            <path d="M16 14h.01" />
-                            <path d="M8 18h.01" />
-                            <path d="M12 18h.01" />
-                            <path d="M16 18h.01" />
-                        </svg>
+                        <CalendarDays />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
-                            {result.q1_cleaningstartdate} to{" "}
+                        <div className="text-xl font-semibold">
+                            <Label className="text-neutral-500">
+                                Start Date
+                            </Label>
+                            <br />
+                            {result.q1_cleaningstartdate}
+                            <Separator className="my-2" />
+                            <Label className="text-neutral-500">End Date</Label>
+                            <br />
                             {result.q1_cleaningenddate}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
+                        <CardTitle className="text-lg font-bold">
                             Q2 Cleaning Date
                         </CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#171717"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-calendar-days"
-                        >
-                            <rect
-                                width="18"
-                                height="18"
-                                x="3"
-                                y="4"
-                                rx="2"
-                                ry="2"
-                            />
-                            <line x1="16" x2="16" y1="2" y2="6" />
-                            <line x1="8" x2="8" y1="2" y2="6" />
-                            <line x1="3" x2="21" y1="10" y2="10" />
-                            <path d="M8 14h.01" />
-                            <path d="M12 14h.01" />
-                            <path d="M16 14h.01" />
-                            <path d="M8 18h.01" />
-                            <path d="M12 18h.01" />
-                            <path d="M16 18h.01" />
-                        </svg>
+                        <CalendarDays />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
-                            {result.q2_cleaningstartdate} to{" "}
+                        <div className="text-xl font-semibold">
+                            <Label className="text-neutral-500">
+                                Start Date
+                            </Label>
+                            <br />
+                            {result.q2_cleaningstartdate}
+                            <Separator className="my-2" />
+                            <Label className="text-neutral-500">End Date</Label>
+                            <br />
                             {result.q2_cleaningenddate}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
+                        <CardTitle className="text-lg font-bold">
                             Q3 Cleaning Date
                         </CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#171717"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-calendar-days"
-                        >
-                            <rect
-                                width="18"
-                                height="18"
-                                x="3"
-                                y="4"
-                                rx="2"
-                                ry="2"
-                            />
-                            <line x1="16" x2="16" y1="2" y2="6" />
-                            <line x1="8" x2="8" y1="2" y2="6" />
-                            <line x1="3" x2="21" y1="10" y2="10" />
-                            <path d="M8 14h.01" />
-                            <path d="M12 14h.01" />
-                            <path d="M16 14h.01" />
-                            <path d="M8 18h.01" />
-                            <path d="M12 18h.01" />
-                            <path d="M16 18h.01" />
-                        </svg>
+                        <CalendarDays />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
-                            {result.q3_cleaningstartdate} to{" "}
+                        <div className="text-xl font-semibold">
+                            <Label className="text-neutral-500">
+                                Start Date
+                            </Label>
+                            <br />
+                            {result.q3_cleaningstartdate}
+                            <Separator className="my-2" />
+                            <Label className="text-neutral-500">End Date</Label>
+                            <br />
                             {result.q3_cleaningenddate}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
+                        <CardTitle className="text-lg font-bold">
                             Q4 Cleaning Date
                         </CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#171717"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-calendar-days"
-                        >
-                            <rect
-                                width="18"
-                                height="18"
-                                x="3"
-                                y="4"
-                                rx="2"
-                                ry="2"
-                            />
-                            <line x1="16" x2="16" y1="2" y2="6" />
-                            <line x1="8" x2="8" y1="2" y2="6" />
-                            <line x1="3" x2="21" y1="10" y2="10" />
-                            <path d="M8 14h.01" />
-                            <path d="M12 14h.01" />
-                            <path d="M16 14h.01" />
-                            <path d="M8 18h.01" />
-                            <path d="M12 18h.01" />
-                            <path d="M16 18h.01" />
-                        </svg>
+                        <CalendarDays />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
-                            {result.q4_cleaningstartdate} to{" "}
+                        <div className="text-xl font-semibold">
+                            <Label className="text-neutral-500">
+                                Start Date
+                            </Label>
+                            <br />
+                            {result.q4_cleaningstartdate}
+                            <Separator className="my-2" />
+                            <Label className="text-neutral-500">End Date</Label>
+                            <br />
                             {result.q4_cleaningenddate}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
+                        <CardTitle className="text-lg font-bold">
                             Number of Food Stores
                         </CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#171717"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-store"
-                        >
-                            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
-                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
-                            <path d="M2 7h20" />
-                            <path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7" />
-                        </svg>
+                        <Store />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
+                        <div className="text-xl font-semibold">
                             {result.no_of_food_stalls}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
+                        <CardTitle className="text-lg font-bold">
                             Number of Market Stores
                         </CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#171717"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-store"
-                        >
-                            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
-                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
-                            <path d="M2 7h20" />
-                            <path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7" />
-                        </svg>
+                        <Store />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
+                        <div className="text-xl font-semibold">
                             {result.no_of_market_stalls}
                         </div>
                     </CardContent>
                 </Card>
             </div>
+
             <div>
                 <Map
                     mapboxAccessToken={mapboxToken}
