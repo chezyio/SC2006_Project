@@ -9,7 +9,7 @@ const Footer = () => {
                 </p>
                 <p className="text-xs text-neutral-500">
                     SC2006 Software Engineering
-                </p>{" "}
+                </p>
             </div>
         </div>
     );

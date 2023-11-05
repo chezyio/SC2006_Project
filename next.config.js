@@ -16,7 +16,7 @@ const nextConfig = {
     // },
 
     images: {
-        domains: ['localhost', 'www.nea.gov.sg', 'images.unsplash.com'],
+        domains: ['localhost', 'www.nea.gov.sg', 'images.unsplash.com', 'lh3.googleusercontent.com', 'maps.googleapis.com'],
     }
 }
 

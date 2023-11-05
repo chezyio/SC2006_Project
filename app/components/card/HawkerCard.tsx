@@ -1,5 +1,3 @@
-
-
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -14,7 +12,7 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import { Star } from "lucide-react";
 
-import { supabase } from "../utils/supabase";
+import { supabase } from "../../utils/supabase";
 
 const HawkerCard = ({ hawker, userId }) => {
     const [isFav, setIsFav] = useState(false);
@@ -75,7 +73,7 @@ const HawkerCard = ({ hawker, userId }) => {
                     {
                         user_id: userId,
                         hawker_id: hawker._id,
-                        hawker: hawker
+                        hawker: hawker,
                     },
                 ]);
                 setIsFav(!isFav);
@@ -106,10 +104,11 @@ const HawkerCard = ({ hawker, userId }) => {
                 </CardHeader>
             </Link>
             <CardContent>
-                <button onClick={toggleFav}></button>
-                <Toggle pressed={isFav} onPressedChange={() => toggleFav()}>
-                    {isFav ? "Remove from Favorites" : "Add to Favorites"}
-                </Toggle>
+                {userId && (
+                    <Toggle pressed={isFav} onPressedChange={() => toggleFav()}>
+                        {isFav ? "Remove from Favorites" : "Add to Favorites"}
+                    </Toggle>
+                )}
             </CardContent>
         </Card>
     );

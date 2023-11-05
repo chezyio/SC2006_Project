@@ -2,16 +2,16 @@ const moment = require("moment");
 import Image from "next/image";
 import React from "react";
 
-import HawkerCard from "./components/HawkerCard";
+import HawkerCard from "./components/card/HawkerCard";
 import Food from "../public/food.png";
 import Navi from "../public/navi.png";
 import Coffee from "../public/coffee.png";
 import Food2 from "../public/food2.png";
 import Calendar from "../public/calendar.png";
 
-import { columns } from "./components/columns";
-import { DataTable } from "./components/data-table";
-import { DatePicker } from "./components/date-picker";
+import { columns } from "./components/table/columns";
+import { DataTable } from "./components/table/data-table";
+import { DatePicker } from "./components/table/date-picker";
 
 import {
     Card,
@@ -101,10 +101,10 @@ export default async function Home() {
                                     Information
                                 </p>
                                 <p className="text-md">
-                                    Whether you're a local foodie or a curious
-                                    traveler, our hawker center information
-                                    check is your go-to resource for exploring
-                                    the diverse world of street food.
+                                    Whether you&apos;re a local foodie or a
+                                    curious traveler, our hawker center
+                                    information check is your go-to resource for
+                                    exploring the diverse world of street food.
                                 </p>
                             </div>
                         </div>

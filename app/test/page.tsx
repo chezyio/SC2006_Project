@@ -1,58 +1,44 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 
-const YourComponent = () => {
-    const [searchInput, setSearchInput] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
+const page = () => {
+    const apiKey = "AIzaSyBM9BasUsyu6KQezk9i09qGEG9V8tsgmsw";
+    // const apiUrl =
+    //     "https://maps.googleapis.com/maps/api/place/textsearch/json?";
+    const query = "Adam Road Food Centre"; // Replace with the text you want to search for
+    const fieldMask = "reviews,user_ratings_total, parkingOptions"; // Specify the fields you want to retrieve
 
-    const apiKey = "AIzaSyCROvUUEuV8QkcF8F2tHGRP5QdH3WsmZG8";
+    const textSearchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${apiKey}`;
 
-    const handleSearch = async () => {
-        try {
-            // Construct the URL for the Text Search API.
-            const apiUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${searchInput}&key=${apiKey}`;
+    fetch(textSearchUrl)
+        .then((response) => response.json())
+        .then((data) => {
+            // Extract the place_id from the results (assuming the first result)
+            const placeId = data.results[0] ? data.results[0].place_id : null;
 
-            // Send a GET request to the API.
-            const response = await fetch(apiUrl);
+            if (placeId) {
+                // Step 2: Place Details API to get reviews for the identified place
+                const placeDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&key=${apiKey}`;
 
-            if (!response.ok) {
-                throw new Error("Request failed");
+                fetch(placeDetailsUrl)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Handle the reviews for the place
+                        const reviews = data.result.reviews;
+                        console.log(reviews);
+                    })
+                    .catch((error) => {
+                        // Handle errors in the Place Details API request
+                        console.error(error);
+                    });
+            } else {
+                console.log("No place found with the given query.");
             }
-
-            // Parse the JSON response.
-            const data = await response.json();
-
-            // Extract the search results (e.g., hawker information).
-            const results = data.results || [];
-
-            setSearchResults(results);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    };
-
-    return (
-        <div>
-            <input
-                type="text"
-                placeholder="Search for a hawker"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-            />
-            <button onClick={handleSearch}>Search</button>
-
-            {searchResults.length > 0 && (
-                <div>
-                    <h2>Search Results:</h2>
-                    <ul>
-                        {searchResults.map((result) => (
-                            <li key={result.place_id}>{result.name}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-        </div>
-    );
+        })
+        .catch((error) => {
+            // Handle errors in the Text Search API request
+            console.error(error);
+        });
+    return <div>page</div>;
 };
 
-export default YourComponent;
+export default page;

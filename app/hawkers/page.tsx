@@ -1,6 +1,5 @@
 import * as React from "react";
-import HawkerCard from "../components/HawkerCard";
-
+import HawkerCard from "../components/card/HawkerCard";
 
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -8,7 +7,7 @@ import { Database } from "../database.types";
 
 import { Suspense } from "react";
 import Map2 from "../components/Map";
-import getHawkers from "../utils/hawkers";
+import { getHawkers } from "../utils/hawkers";
 
 const page = async () => {
     const hawkers = await getHawkers();
@@ -29,7 +28,13 @@ const page = async () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 my-24">
                 {hawkers.map((hawker) => {
-                    return <HawkerCard hawker={hawker} userId={user.id} />;
+                    return (
+                        <HawkerCard
+                            key={hawker._id}
+                            hawker={hawker}
+                            userId={user ? user.id : null} // Check if user exists
+                        />
+                    );
                 })}
             </div>
         </Suspense>

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-import FavouriteCard from "../components/FavouriteCard";
+import FavouriteCard from "../components/card/FavouriteCard";
 
 export default function AccountForm({ session }: { session: Session | null }) {
     const supabase = createClientComponentClient<Database>();
@@ -28,7 +28,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             let { data, error, status } = await supabase
                 .from("profiles")
                 .select(`full_name, username, website, avatar_url`)
-                .eq("id", user?.id)
+                .eq("id", user.id)
                 .single();
 
             const fav = await supabase
@@ -168,8 +168,8 @@ export default function AccountForm({ session }: { session: Session | null }) {
             <div>
                 <p className="text-4xl font-bold my-12">Favourites</p>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 my-4">
-                    {favourites.map((favourite) => {
-                        return <FavouriteCard favourite={favourite} />;
+                    {favourites.map((favourite, id) => {
+                        return <FavouriteCard key={id} favourite={favourite} />;
                     })}
                 </div>
             </div>

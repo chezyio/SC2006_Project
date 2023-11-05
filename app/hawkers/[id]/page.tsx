@@ -1,21 +1,9 @@
-"use client";
-const moment = require("moment");
-
-import { useState, useRef } from "react";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { IoMdPin } from "react-icons/io";
 import Image from "next/image";
-import Link from "next/link";
-import { CalendarDays, Store } from "lucide-react";
-
-import Map, {
-    Marker,
-    Popup,
-    NavigationControl,
-    GeolocateControl,
-} from "react-map-gl";
-
-import classes from "./Page.module.css";
+import { CalendarDays, Store, Star } from "lucide-react";
+import HawkerMap from "../HawkerMap";
+import { getHawkersById } from "@/app/utils/hawkers";
+import { converter } from "@/app/utils/converter";
+import { getReviews } from "@/app/utils/reviews";
 
 import {
     Card,
@@ -25,47 +13,23 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
 
 import DateRangeComparison from "./DateComparison";
-
-async function getHawkers(id) {
-    const res = await fetch(
-        "https://data.gov.sg/api/action/datastore_search?resource_id=b80cb643-a732-480d-86b5-e03957bc82aa&limit=9999"
-    );
-    const data = await res.json();
-    const x = data.result.records.find((hawker) => hawker._id == id);
-
-    if (!res.ok) {
-        throw new Error("Failed to fetch data");
-    }
-
-    return x;
-}
-
+const tags = Array.from({ length: 50 }).map(
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`
+);
 const page = async ({ params: { id } }: { params: { id: string } }) => {
-    const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-    const [selectedMarker, setSelectedMarker] = useState(null);
-    const mapRef = useRef(null);
+    const result = await getHawkersById(id);
+    const reviews = await getReviews(result.name);
 
-    const result = await getHawkers(id);
-
-    const zoomToSelectedLoc = (e, result) => {
-        // stop event bubble-up which triggers unnecessary events
-        e.stopPropagation();
-        setSelectedMarker({ result });
-        mapRef.current.flyTo({
-            center: [result.longitude_hc, result.latitude_hc],
-            zoom: 20,
-        });
-    };
-
-    const q1d = moment(result.q1_cleaningstartdate, "DD/MM/YYYY");
-    const q2d = moment(result.q2_cleaningstartdate, "DD/MM/YYYY");
-    const q3d = moment(result.q3_cleaningstartdate, "DD/MM/YYYY");
-    const q4d = moment(result.q4_cleaningstartdate, "DD/MM/YYYY");
+    const q1d = converter(result.q1_cleaningstartdate);
+    const q2d = converter(result.q2_cleaningstartdate);
+    const q3d = converter(result.q3_cleaningstartdate);
+    const q4d = converter(result.q4_cleaningstartdate);
 
     const dateRanges = [
         {
@@ -94,6 +58,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
             <div className="h-96 w-full relative my-4">
                 <Image
                     src={result.photourl}
+                    alt="image"
                     style={{ objectFit: "cover" }}
                     className="rounded-[8px]"
                     fill
@@ -106,7 +71,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
             </p>
             <p className="text-xl my-8">{result.description_myenv}</p>
 
-            <DateRangeComparison dateRanges={dateRanges} />
+            <DateRangeComparison dateRanges={JSON.stringify(dateRanges)} />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 my-12">
                 <Card>
@@ -219,90 +184,115 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                         </div>
                     </CardContent>
                 </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-lg font-bold">
+                            Opening Hours
+                        </CardTitle>
+                        <Store />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-xl font-semibold">
+                            {reviews.opening_hours?.weekday_text ? (
+                                reviews.opening_hours.weekday_text.map(
+                                    (day) => {
+                                        return (
+                                            <div>
+                                                <Label className="text-neutral-500">
+                                                    {day}
+                                                </Label>
+                                                <br />
+                                            </div>
+                                        );
+                                    }
+                                )
+                            ) : (
+                                <div>null</div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
-            <div>
-                <Map
-                    mapboxAccessToken={mapboxToken}
-                    mapStyle="mapbox://styles/mapbox/streets-v12"
-                    initialViewState={{
-                        latitude: 1.3521,
-                        longitude: 103.8198,
-                        zoom: 10,
-                    }}
-                    style={{ width: "100%", height: 800, borderRadius: "8px" }}
-                    maxZoom={20}
-                    minZoom={3}
-                    ref={mapRef}
-                    // attributes...
-                >
-                    {/*Geolocate and Navigation controls...*/}
-                    <GeolocateControl position="top-left" />
-                    <NavigationControl position="top-left" />
-
-                    {selectedMarker ? (
-                        <Popup
-                            offset={25}
-                            latitude={selectedMarker.result.latitude_hc}
-                            longitude={selectedMarker.result.longitude_hc}
-                            onClose={() => {
-                                setSelectedMarker(null);
-                            }}
-                            closeButton={false}
-                        >
-                            <h3 className={classes.popupTitle}>
-                                {selectedMarker.result.name}
-                            </h3>
-                            <div className={classes.popupInfo}>
-                                <label className={classes.popupLabel}>
-                                    Code:{" "}
-                                </label>
-                                <span>{selectedMarker.result.code}</span>
-                                <br />
-                                <label className={classes.popupLabel}>
-                                    Country:{" "}
-                                </label>
-                                <span>{selectedMarker.result.country}</span>
-                                <br />
-                                <label className={classes.popupLabel}>
-                                    Website:{" "}
-                                </label>
-                                <Link
-                                    href={
-                                        selectedMarker.result.url === ""
-                                            ? "#"
-                                            : selectedMarker.result.url
-                                    }
-                                    target={
-                                        selectedMarker.result.url === ""
-                                            ? null
-                                            : "_blank"
-                                    }
-                                    className={classes.popupWebUrl}
-                                >
-                                    {selectedMarker.result.url === ""
-                                        ? "Nil"
-                                        : selectedMarker.result.url}
-                                </Link>
+            <div className="grid grid-cols-3 gap-4 my-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 col-span-2">
+                    {reviews.photoUrls.map((photo, key) => {
+                        return (
+                            <div className="h-full w-full relative">
+                                <Image
+                                    src={photo}
+                                    alt="image"
+                                    className="rounded-[8px] relative"
+                                    style={{ objectFit: "cover" }}
+                                    fill
+                                />
                             </div>
-                        </Popup>
-                    ) : null}
+                        );
+                    })}
+                </div>
 
-                    <Marker
-                        key={result._id}
-                        longitude={result.longitude_hc}
-                        latitude={result.latitude_hc}
-                    >
-                        <button
-                            type="button"
-                            className="cursor-pointer"
-                            onClick={(e) => zoomToSelectedLoc(e, result)}
-                        >
-                            {<IoMdPin size={30} color="tomato" />}
-                        </button>
-                    </Marker>
-                </Map>
+                <div className="grid gap-4 ">
+                    {reviews.reviews.map((review, key) => {
+                        return (
+                            <Card key={key}>
+                                <CardHeader className="flex flex-row justify-between">
+                                    <div>
+                                        <Image
+                                            src={review.profile_photo_url}
+                                            height={32}
+                                            width={32}
+                                        />
+                                        <p className="text-lg font-medium">
+                                            {review.author_name}
+                                        </p>
+                                        <CardDescription>
+                                            {review.relative_time_description}
+                                        </CardDescription>
+                                    </div>
+                                    <div className="flex gap-1">
+                                        <CardTitle>{review.rating}</CardTitle>
+                                        <Star />
+                                    </div>
+                                </CardHeader>
+                                <CardContent>{review.text}</CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
             </div>
+
+            <HawkerMap result={result} />
+            {/* <ScrollArea className="h-72 rounded-md border">
+                <div className="p-4">
+                    <h4 className="mb-4 text-sm font-medium leading-none">
+                        Tags
+                    </h4>
+                    {reviews.map((review, key) => (
+                        <>
+                            <Card key={key}>
+                                <CardHeader className="flex flex-row justify-between">
+                                    <div>
+                                        <Image
+                                            src={review.profile_photo_url}
+                                            height={32}
+                                            width={32}
+                                        />
+                                        <p className="text-lg font-medium">
+                                            {review.author_name}
+                                        </p>
+                                        <CardDescription>
+                                            {review.relative_time_description}
+                                        </CardDescription>
+                                    </div>
+                                    <CardTitle>{review.rating} / 5</CardTitle>
+                                </CardHeader>
+                                <CardContent>{review.text}</CardContent>
+                            </Card>
+                            <Separator className="my-2" />
+                        </>
+                    ))}
+                </div>
+            </ScrollArea> */}
         </div>
     );
 };

@@ -15,7 +15,7 @@ import { Star } from "lucide-react";
 const FavouriteCard = ({ favourite }) => {
     return (
         <Card className="h-full flex flex-col">
-            {/* <div className="h-48 w-full relative">
+            <div className="h-48 w-full relative">
                 <Image
                     src={favourite.hawker.photourl}
                     alt="image"
@@ -24,7 +24,7 @@ const FavouriteCard = ({ favourite }) => {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-            </div> */}
+            </div>
             <CardHeader>
                 <CardTitle>{favourite.hawker.name}</CardTitle>
                 <CardDescription>

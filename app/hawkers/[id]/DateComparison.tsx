@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { CalendarRange } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -9,7 +10,7 @@ export default function DateRangeComparison({ dateRanges }) {
         const currentDate = new Date();
         const daysLeftObject = {};
 
-        dateRanges.forEach((range) => {
+        JSON.parse(dateRanges).forEach((range) => {
             const start = new Date(range.start);
             const end = new Date(range.end);
             const timeDifference = start - currentDate;
@@ -36,6 +37,9 @@ export default function DateRangeComparison({ dateRanges }) {
                             day in {rangeName}
                         </p>
                     ))}
+                    {Object.keys(daysLeft).length === 0 && (
+                        <p>Please check back again for more updates!</p>
+                    )}
                 </AlertTitle>
             </Alert>
         </div>
