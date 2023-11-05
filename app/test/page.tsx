@@ -1,44 +1,30 @@
-import React from "react";
+import OpenAI from "openai";
 
-const page = () => {
-    const apiKey = "AIzaSyBM9BasUsyu6KQezk9i09qGEG9V8tsgmsw";
-    // const apiUrl =
-    //     "https://maps.googleapis.com/maps/api/place/textsearch/json?";
-    const query = "Adam Road Food Centre"; // Replace with the text you want to search for
-    const fieldMask = "reviews,user_ratings_total, parkingOptions"; // Specify the fields you want to retrieve
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
-    const textSearchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${apiKey}`;
-
-    fetch(textSearchUrl)
-        .then((response) => response.json())
-        .then((data) => {
-            // Extract the place_id from the results (assuming the first result)
-            const placeId = data.results[0] ? data.results[0].place_id : null;
-
-            if (placeId) {
-                // Step 2: Place Details API to get reviews for the identified place
-                const placeDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&key=${apiKey}`;
-
-                fetch(placeDetailsUrl)
-                    .then((response) => response.json())
-                    .then((data) => {
-                        // Handle the reviews for the place
-                        const reviews = data.result.reviews;
-                        console.log(reviews);
-                    })
-                    .catch((error) => {
-                        // Handle errors in the Place Details API request
-                        console.error(error);
-                    });
-            } else {
-                console.log("No place found with the given query.");
-            }
-        })
-        .catch((error) => {
-            // Handle errors in the Text Search API request
-            console.error(error);
-        });
-    return <div>page</div>;
+const page = async () => {
+    const response = await openai.completions.create({
+        model: "gpt-3.5-turbo-instruct",
+        prompt: [
+            " Summarise the following, When I crave for glutinous rice, I think of my FAVOURITE GLUTINOUS RICE & ECONOMICAL BEE HOON STALL — Zhu Jiao Shu Shi, stall 01-284 at Tekka Food Centre. Once youve tasted the food, you know it must be cooked by someone with years of experience. True enough, the cook is an elderly lady, with a middle-aged man, who probably her son, serving customers. This plateful of glutinous rice n fried bee hoon topped with cabbages n a fried egg is only $3. They should be charging more for such a generous helping of delicious food. Please support them",
+            "One of the best peanut porridge.. glutinous rice and noodles are good as well. Been patronising this stall whenever I am in this area.",
+        ],
+        temperature: 0,
+        max_tokens: 1024,
+    });
+    return (
+        <div>
+            {response.choices.map((choice) => {
+                return (
+                    <div>
+                        <p>{choice.text}</p>
+                    </div>
+                );
+            })}
+        </div>
+    );
 };
 
 export default page;

@@ -4,6 +4,7 @@ import HawkerMap from "../HawkerMap";
 import { getHawkersById } from "@/app/utils/hawkers";
 import { converter } from "@/app/utils/converter";
 import { getReviews } from "@/app/utils/reviews";
+import { summarizer } from "@/app/utils/summarizer";
 
 import {
     Card,
@@ -25,6 +26,11 @@ const tags = Array.from({ length: 50 }).map(
 const page = async ({ params: { id } }: { params: { id: string } }) => {
     const result = await getHawkersById(id);
     const reviews = await getReviews(result.name);
+
+    const textArray = reviews.reviews.map((review) => review.text);
+    const allTexts = textArray.join("\n");
+
+    const summarized = await summarizer(allTexts);
 
     const q1d = converter(result.q1_cleaningstartdate);
     const q2d = converter(result.q2_cleaningstartdate);
@@ -214,21 +220,27 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                 </Card>
             </div>
 
+            <div>
+                <p>{summarized[0].text}</p>
+            </div>
+
             <div className="grid grid-cols-3 gap-4 my-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 col-span-2">
-                    {reviews.photoUrls.map((photo, key) => {
-                        return (
-                            <div className="h-full w-full relative">
-                                <Image
-                                    src={photo}
-                                    alt="image"
-                                    className="rounded-[8px] relative"
-                                    style={{ objectFit: "cover" }}
-                                    fill
-                                />
-                            </div>
-                        );
-                    })}
+                    {reviews.photoUrls
+                        ? reviews.photoUrls.map((photo, key) => {
+                              return (
+                                  <div className="h-full w-full relative">
+                                      <Image
+                                          src={photo}
+                                          alt="image"
+                                          className="rounded-[8px] relative"
+                                          style={{ objectFit: "cover" }}
+                                          fill
+                                      />
+                                  </div>
+                              );
+                          })
+                        : null}
                 </div>
 
                 <div className="grid gap-4 ">

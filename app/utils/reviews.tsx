@@ -34,7 +34,7 @@
 
 export const getReviews = async (hawkerName: string) => {
     try {
-        const apiKey = "AIzaSyBM9BasUsyu6KQezk9i09qGEG9V8tsgmsw";
+        const apiKey = process.env.GOOGLE_API;
         const query = hawkerName;
 
         // Step 1: Text Search to find places
