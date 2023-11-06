@@ -201,9 +201,9 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                         <div className="text-xl font-semibold">
                             {reviews.opening_hours?.weekday_text ? (
                                 reviews.opening_hours.weekday_text.map(
-                                    (day) => {
+                                    (day, key) => {
                                         return (
-                                            <div>
+                                            <div key={key}>
                                                 <Label className="text-neutral-500">
                                                     {day}
                                                 </Label>
@@ -229,7 +229,10 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                     {reviews.photoUrls
                         ? reviews.photoUrls.map((photo, key) => {
                               return (
-                                  <div className="h-full w-full relative">
+                                  <div
+                                      key={key}
+                                      className="h-full w-full relative"
+                                  >
                                       <Image
                                           src={photo}
                                           alt="image"

@@ -16,9 +16,9 @@ const page = async () => {
     });
     return (
         <div>
-            {response.choices.map((choice) => {
+            {response.choices.map((choice, key) => {
                 return (
-                    <div>
+                    <div key={key}>
                         <p>{choice.text}</p>
                     </div>
                 );

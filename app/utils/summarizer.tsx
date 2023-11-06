@@ -1,10 +1,14 @@
+interface inputPrompt {
+    prompt: string;
+}
+
 import OpenAI from "openai";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const summarizer = async (inputPrompt) => {
+export const summarizer = async (inputPrompt: inputPrompt) => {
     const response = await openai.completions.create({
         model: "gpt-3.5-turbo-instruct",
         prompt:

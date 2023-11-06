@@ -10,7 +10,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
-import { Star } from "lucide-react";
 
 import { supabase } from "../../utils/supabase";
 
@@ -44,7 +43,6 @@ const HawkerCard = ({ hawker, userId }) => {
 
     const toggleFav = async () => {
         try {
-            // Check if the item is already favorited
             const { data: favorites, error: favoritesError } = await supabase
                 .from("favourites")
                 .select("hawker_id")
@@ -60,7 +58,6 @@ const HawkerCard = ({ hawker, userId }) => {
             );
 
             if (isAlreadyFavorited) {
-                // Item is already favorited, so remove it from favorites
                 await supabase
                     .from("favourites")
                     .delete()
@@ -68,7 +65,6 @@ const HawkerCard = ({ hawker, userId }) => {
                     .eq("hawker_id", hawker._id);
                 setIsFav(!isFav);
             } else {
-                // Item is not favorited, so add it to favorites
                 await supabase.from("favourites").insert([
                     {
                         user_id: userId,
@@ -78,8 +74,6 @@ const HawkerCard = ({ hawker, userId }) => {
                 ]);
                 setIsFav(!isFav);
             }
-
-            // Toggle the favorite state
         } catch (error) {
             console.error("Error toggling favorite:", error);
         }

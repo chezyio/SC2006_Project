@@ -25,26 +25,28 @@ export default function AccountForm({ session }: { session: Session | null }) {
 
     const getProfile = async () => {
         try {
-            let { data, error, status } = await supabase
-                .from("profiles")
-                .select(`full_name, username, website, avatar_url`)
-                .eq("id", user.id)
-                .single();
+            if (user) {
+                let { data, error, status } = await supabase
+                    .from("profiles")
+                    .select(`full_name, username, website, avatar_url`)
+                    .eq("id", user.id)
+                    .single();
 
-            const fav = await supabase
-                .from("favourites")
-                .select("*")
-                .eq("user_id", user?.id);
-            if (error && status !== 406) {
-                throw error;
-            }
+                const fav = await supabase
+                    .from("favourites")
+                    .select("*")
+                    .eq("user_id", user?.id);
+                if (error && status !== 406) {
+                    throw error;
+                }
 
-            if (data) {
-                setFullname(data.full_name);
-                setUsername(data.username);
-                setWebsite(data.website);
-                setAvatarUrl(data.avatar_url);
-                setFavourites(fav.data);
+                if (data) {
+                    setFullname(data.full_name);
+                    setUsername(data.username);
+                    setWebsite(data.website);
+                    setAvatarUrl(data.avatar_url);
+                    setFavourites(fav.data);
+                }
             }
         } catch (error) {
             alert("Error loading user data!");
