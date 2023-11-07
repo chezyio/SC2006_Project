@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 
 export const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,15 +13,17 @@ export const signOut = async () => {
     redirect("/");
 };
 
-export const fetchSession = async () => {
-    const {
-        data: { session },
-        error,
-    } = await supabase.auth.getSession();
-    console.log("Session Details", session);
-    if (!session) {
-        return null;
-    } else {
-        return session;
-    }
-};
+// export const fetchSession = async () => {
+//     const supabase = createServerComponentClient<Database>({ cookies });
+
+//     const {
+//         data: { session },
+//     } = await supabase.auth.getSession();
+
+//     console.log("Session Details", session);
+//     if (!session) {
+//         return null;
+//     } else {
+//         return session;
+//     }
+// };

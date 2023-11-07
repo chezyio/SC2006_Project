@@ -5,6 +5,8 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "../database.types";
 import { cookies } from "next/headers";
 
+import Image from "next/image";
+
 import {
     ArrowPathIcon,
     Bars3Icon,
@@ -15,17 +17,10 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-import { fetchSession } from "../utils/supabase";
+import Logo from "../../public/hh_logo.png";
 
-export default function Example() {
+export default function Header({ session }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        const userSession = fetchSession();
-        setIsLoggedIn(!!userSession);
-    }, []);
-
     return (
         <header className="bg-white">
             <nav
@@ -33,6 +28,7 @@ export default function Example() {
                 aria-label="Global"
             >
                 <div className="flex lg:flex-1">
+                    {/* <Image src={Logo} height={16} width={16} /> */}
                     <a href="/" className="-m-1.5 p-1.5 font-semibold">
                         <p>HawkerHub</p>
                     </a>
@@ -55,13 +51,14 @@ export default function Example() {
                         Hawkers
                     </a>
                 </Popover.Group>
+
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    {isLoggedIn ? (
+                    {session ? (
                         <a
                             href="/account"
                             className="text-sm font-semibold leading-6 text-gray-900"
                         >
-                            Sign Out <span aria-hidden="true">&rarr;</span>
+                            Profile
                         </a>
                     ) : (
                         <a
@@ -105,12 +102,21 @@ export default function Example() {
                                 </a>
                             </div>
                             <div className="py-6">
-                                <a
-                                    href="/login"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                    Login
-                                </a>
+                                {session ? (
+                                    <a
+                                        href="/account"
+                                        className="text-sm font-semibold leading-6 text-gray-900"
+                                    >
+                                        Profile
+                                    </a>
+                                ) : (
+                                    <a
+                                        href="/account"
+                                        className="text-sm font-semibold leading-6 text-gray-900"
+                                    >
+                                        Sign In
+                                    </a>
+                                )}
                             </div>
                         </div>
                     </div>

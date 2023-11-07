@@ -23,6 +23,10 @@ import {
 } from "@/components/ui/card";
 import { CalendarDays } from "lucide-react";
 
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
 async function getHawkers() {
     const res = await fetch(
         "https://data.gov.sg/api/action/datastore_search?resource_id=b80cb643-a732-480d-86b5-e03957bc82aa&limit=9999"
@@ -66,7 +70,7 @@ export default async function Home() {
                                         specialties
                                     </p>
                                     <a
-                                        href="#"
+                                        href="/hawkers"
                                         className="rounded-full bg-blue-400 px-3.5 py-2.5 text-xs text-white"
                                     >
                                         Get Started
@@ -178,3 +182,27 @@ export default async function Home() {
         </div>
     );
 }
+
+// export default async function Home() {
+//     const supabase = createServerComponentClient<Database>({ cookies });
+//     const {
+//         data: { session },
+//     } = await supabase.auth.getSession();
+
+//     if (!session) {
+//         redirect("/unauthenticated");
+//     }
+
+//     const { data: todos } = await supabase.from("favourites").select();
+
+//     return (
+//         <>
+//             <p>
+//                 {todos.map((todo) => {
+//                     return <div>{todo.hawker_id}</div>;
+//                 })}
+//             </p>
+// <h1>Hello, {session.user.email}</h1>
+//         </>
+//     );
+// }

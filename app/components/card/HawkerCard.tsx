@@ -25,6 +25,7 @@ const HawkerCard = ({ hawker, userId }) => {
                     .select("hawker_id")
                     .eq("user_id", userId);
 
+
                 if (error) {
                     console.error("Error fetching favorites:", error);
                     return;

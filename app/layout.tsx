@@ -3,11 +3,20 @@ import Footer from "./components/Footer";
 
 import "./globals.css";
 
+import Login from "./login";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+
 export default async function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const supabase = createServerComponentClient<Database>({ cookies });
+    const {
+        data: { session },
+    } = await supabase.auth.getSession();
+
     return (
         <html lang="en">
             <head>
@@ -18,7 +27,7 @@ export default async function RootLayout({
             </head>
 
             <body>
-                <Header />
+                <Header session={session} />
                 <main className="container max-w-screen min-h-screen mx-auto p-6">
                     {children}
                 </main>

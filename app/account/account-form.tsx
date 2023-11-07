@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 import FavouriteCard from "../components/card/FavouriteCard";
+import HawkerCard from "../components/card/HawkerCard";
 
 export default function AccountForm({ session }: { session: Session | null }) {
     const supabase = createClientComponentClient<Database>();
@@ -172,6 +173,13 @@ export default function AccountForm({ session }: { session: Session | null }) {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 my-4">
                     {favourites.map((favourite, id) => {
                         return <FavouriteCard key={id} favourite={favourite} />;
+                        // return (
+                        //     <HawkerCard
+                        //         key={id}
+                        //         hawker={favourite}
+                        //         userId={user ? user.id : null} // Check if user exists
+                        //     />
+                        // );
                     })}
                 </div>
             </div>
